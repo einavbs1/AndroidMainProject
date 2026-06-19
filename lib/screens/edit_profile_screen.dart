@@ -300,7 +300,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'Please sign in to view and customize your profile details, complete your details, and start sharing stories with other parents and toddlers!',
+                      'Please sign in to view and customize your profile details, complete your details, and start sharing stories with other parents and kids!',
                       style: TextStyle(
                         fontSize: 15,
                         color: Colors.grey[600],

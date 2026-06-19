@@ -274,7 +274,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             const Text(
-                              'Toddlers Stories 📖',
+                              'Story-Land 📖',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 28,

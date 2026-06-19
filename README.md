@@ -1,6 +1,6 @@
-# 📚 Toddlers Stories Portal
+# 📚 Story-Land Portal
 
-Welcome to the **Toddlers Stories Portal** project. This repository contains a feature-rich, modern Flutter application designed for parents to browse, read, and share custom stories for toddlers and young children. 
+Welcome to the **Story-Land Portal** project. This repository contains a feature-rich, modern Flutter application designed for parents to browse, read, and share custom stories for toddlers and young children. 
 
 This project is tailored specifically for the **Android** and **Web** platforms and is integrated with Firebase for story storage, metadata tracking, and parent authentication.
 

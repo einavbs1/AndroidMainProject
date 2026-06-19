@@ -24,7 +24,7 @@ class DashboardScreen extends StatelessWidget {
             automaticallyImplyLeading: false, // Disables back button
             backgroundColor: Colors.transparent,
             title: const Text(
-              'TODDLERS STORIES',
+              'STORY-LAND',
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w900,
