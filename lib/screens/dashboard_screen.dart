@@ -23,16 +23,6 @@ class DashboardScreen extends StatelessWidget {
             pinned: true,
             automaticallyImplyLeading: false, // Disables back button
             backgroundColor: Colors.transparent,
-            title: const Text(
-              'STORY-LAND',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 1.5,
-                fontSize: 18,
-              ),
-            ),
-            centerTitle: true,
             actions: [
               if (user != null)
                 Container(
@@ -118,6 +108,16 @@ class DashboardScreen extends StatelessWidget {
                 ),
               ),
               child: FlexibleSpaceBar(
+                centerTitle: true,
+                title: const Text(
+                  'STORY-LAND',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1.5,
+                    fontSize: 18,
+                  ),
+                ),
                 background: Center(
                   child: Icon(
                     Icons.menu_book_rounded,
