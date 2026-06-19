@@ -1,0 +1,44 @@
+# User Requested Ignore (Sensitive Firebase API credentials)
+lib/firebase_options.dart
+
+# Firebase Config Files (Prevent exposure of project API keys & IDs)
+google-services.json
+GoogleService-Info.plist
+
+# Local developer configuration (User-specific local SDK paths)
+local.properties
+
+# Android release signing keys and configurations
+key.properties
+*.keystore
+*.jks
+
+# Local environment variables
+.env
+.env.*
+
+# Log files
+*.log
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Generated PDFs / scripts
+generated_pdfs/
+generate_pdfs.py
+
+# IDE configurations
+.idea/
+*.iml
+.vscode/
+
+# Flutter application specific ignores
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+
