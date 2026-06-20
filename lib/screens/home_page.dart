@@ -148,70 +148,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  Future<void> _runOneTapTestLogin() async {
-    if (_isLoggingIn) return;
 
-    setState(() {
-      _isLoggingIn = true;
-    });
-
-    final testPhone = '+972501234567';
-    final testPin = '123456';
-
-    try {
-      if (kIsWeb) {
-        final confirmationResult = await FirebaseAuth.instance.signInWithPhoneNumber(testPhone);
-        final UserCredential userCredential = await confirmationResult.confirm(testPin);
-        if (userCredential.user != null) {
-          await _handlePostLoginRedirect(userCredential.user!);
-        }
-      } else {
-        await FirebaseAuth.instance.verifyPhoneNumber(
-          phoneNumber: testPhone,
-          verificationCompleted: (PhoneAuthCredential credential) async {
-            final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-            if (userCredential.user != null) {
-              await _handlePostLoginRedirect(userCredential.user!);
-            }
-          },
-          verificationFailed: (FirebaseAuthException e) {
-            setState(() {
-              _isLoggingIn = false;
-            });
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Test Login Failed: ${e.message}'),
-                backgroundColor: Colors.redAccent,
-              ),
-            );
-          },
-          codeSent: (String verificationId, int? resendToken) async {
-            PhoneAuthCredential credential = PhoneAuthProvider.credential(
-              verificationId: verificationId,
-              smsCode: testPin,
-            );
-            final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-            if (userCredential.user != null) {
-              await _handlePostLoginRedirect(userCredential.user!);
-            }
-          },
-          codeAutoRetrievalTimeout: (String verificationId) {},
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isLoggingIn = false;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Test Login Failed: $e'),
-            backgroundColor: Colors.redAccent,
-          ),
-        );
-      }
-    }
-  }
 
   void _goBackToDashboard() {
     if (Navigator.of(context).canPop()) {
@@ -407,31 +344,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 18),
 
-                            // Playful 1-Tap Test Login bypass
-                            SizedBox(
-                              width: double.infinity,
-                              height: 52,
-                              child: ElevatedButton.icon(
-                                onPressed: _isLoggingIn ? null : _runOneTapTestLogin,
-                                icon: const Icon(Icons.auto_awesome_rounded, color: Colors.white),
-                                label: const Text(
-                                  '1-TAP TEST LOGIN',
-                                  style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1),
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFFFFB300),
-                                  foregroundColor: Colors.white,
-                                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                                  elevation: 4,
-                                  shadowColor: const Color(0xFFFFB300).withOpacity(0.4),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(26),
-                                  ),
-                                ),
-                              ),
-                            ),
                           ],
                         ),
                       ),
