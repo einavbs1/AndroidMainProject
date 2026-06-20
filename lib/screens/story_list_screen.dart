@@ -6,8 +6,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:open_filex/open_filex.dart';
 import '../app_state.dart';
 import 'home_page.dart';
 import 'edit_profile_screen.dart';
@@ -607,16 +608,106 @@ class _StoryListScreenState extends State<StoryListScreen> {
     }
   }
 
-  Future<void> _openStory(String url) async {
-    final Uri uri = Uri.parse(url);
+  Future<void> _openStory(String url, String storyName) async {
     try {
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                const Text('Downloading story...'),
+              ],
+            ),
+            duration: const Duration(days: 1), // Keep open until manually dismissed
+          ),
+        );
+      }
+
+      final Uri uri = Uri.parse(url);
+      
+      // Determine file extension from URL
+      String extension = 'pdf'; // Default fallback
+      if (url.toLowerCase().contains('.docx')) {
+        extension = 'docx';
+      } else if (url.toLowerCase().contains('.doc')) {
+        extension = 'doc';
+      } else if (url.toLowerCase().contains('.pdf')) {
+        extension = 'pdf';
+      }
+
+      // Download file to temporary directory
+      final io.Directory tempDir = await getTemporaryDirectory();
+      
+      // Sanitize the story name for a valid file name
+      final String safeName = storyName.replaceAll(RegExp(r'[^\w\s\-]'), '');
+      final String filePath = '${tempDir.path}/${safeName}_downloaded.$extension';
+      final io.File file = io.File(filePath);
+
+      // Download the file from url using HttpClient
+      final io.HttpClient client = io.HttpClient();
+      final io.HttpClientRequest request = await client.getUrl(uri);
+      final io.HttpClientResponse response = await request.close();
+      
+      if (response.statusCode == 200) {
+        final List<int> bytes = await response.fold<List<int>>([], (previous, element) => previous..addAll(element));
+        await file.writeAsBytes(bytes);
       } else {
-        throw 'Could not launch $url';
+        throw 'Failed to download file (status code: ${response.statusCode})';
+      }
+
+      // Dismiss the "Downloading..." snackbar
+      if (mounted) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+      }
+
+      // Function to trigger opening the file
+      Future<void> triggerOpen() async {
+        final result = await OpenFilex.open(filePath);
+        if (result.type != ResultType.done) {
+          throw result.message;
+        }
+      }
+
+      // Automatically try to open it first
+      await triggerOpen();
+
+      // Also show a Snackbar saying it was downloaded successfully with an "OPEN" button
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Download complete!'),
+            backgroundColor: Colors.green,
+            action: SnackBarAction(
+              label: 'OPEN',
+              textColor: Colors.white,
+              onPressed: () {
+                triggerOpen().catchError((e) {
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Could not open document: $e'),
+                        backgroundColor: Colors.redAccent,
+                      ),
+                    );
+                  }
+                });
+              },
+            ),
+          ),
+        );
       }
     } catch (e) {
       if (mounted) {
+        ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Could not open document: $e'),
@@ -1126,7 +1217,7 @@ class _StoryListScreenState extends State<StoryListScreen> {
                               IconButton(
                                 icon: Icon(Icons.menu_book_rounded, color: themeColor),
                                 tooltip: 'Read',
-                                onPressed: () => _openStory(url),
+                                onPressed: () => _openStory(url, name),
                               ),
                               if (FirebaseAuth.instance.currentUser != null &&
                                   (data['authorId'] == null ||

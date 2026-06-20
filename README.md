@@ -92,3 +92,27 @@ To set up Firebase locally for this project:
    * **Cloud Firestore**:
      - **`users` Collection**: `users/{uid}` contains parent profile documents (fields: `displayName`, `email`, `phoneNumber`, `updatedAt`).
      - **`stories` Collection**: `stories/{story_id}` contains story documents (fields: `name`, `fileName`, `url`, `storagePath`, `category`, `uploadedBy`, `uploadedAt`, `authorId`, `visibility`, `allowedUsers`).
+
+---
+
+## 📱 Android Release APK
+
+You can download and install the latest stable build of the app directly using the precompiled APK:
+* [Download app-release.apk](file:///c:/A_REPOS/AndroidMainProject/releases/app-release.apk)
+
+### 📲 How to Install:
+1. Download the `app-release.apk` file to your Android device (or copy it from your computer).
+2. Open your device's file manager and tap on the APK file.
+3. If prompted, enable "Install from Unknown Sources" in your browser/file manager settings.
+4. Follow the on-screen instructions to complete the installation.
+
+---
+
+## 🛠️ Recent Updates
+
+### 📄 Local PDF and Word Document Viewer (Android 11+ Support)
+Previously, opening PDF and Word stories from Firebase Storage redirected users to their external web browser (or failed due to Android 11 package visibility restrictions). We have implemented a native-like local viewing experience:
+* **Background Downloading**: Clicking a story automatically downloads the PDF or Word document to the device's temporary cache using Dart's secure `HttpClient`.
+* **Native Application Sharing**: Once the download completes, the file is automatically opened using the device's default reader app (e.g. Adobe Acrobat Reader, Google PDF Viewer, or Microsoft Word/Google Docs).
+* **Interactive SnackBar**: An interactive Snackbar with an **"OPEN"** button is displayed upon completion, allowing users to re-open the document.
+* **Android 11+ Package Visibility**: Configured the `<queries>` element in `AndroidManifest.xml` to declare the HTTP/HTTPS schemes, allowing `url_launcher` and other platform integrations to query handler apps correctly on API level 30+.
