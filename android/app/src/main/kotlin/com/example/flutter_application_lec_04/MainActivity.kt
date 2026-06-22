@@ -1,4 +1,4 @@
-package com.example.toddler_stories
+package com.example.flutter_application_lec_04
 
 import io.flutter.embedding.android.FlutterActivity
 

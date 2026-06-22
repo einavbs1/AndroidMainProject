@@ -109,6 +109,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     try {
       await GoogleSignIn.instance.initialize(
         clientId: kIsWeb ? '180824327760-p7h8a65bjk829qustjuui0t104rlild2.apps.googleusercontent.com' : null,
+        serverClientId: '180824327760-p7h8a65bjk829qustjuui0t104rlild2.apps.googleusercontent.com',
       );
       final GoogleSignInAccount? googleUser = await GoogleSignIn.instance.authenticate();
       if (googleUser == null) {
